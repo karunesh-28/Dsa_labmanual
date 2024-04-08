@@ -1,0 +1,108 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Stack {
+private:
+    char* arr;
+    int top;
+    int capacity;
+
+public:
+    Stack(int size) {
+        capacity = size;
+        arr = new char[capacity];
+        top = -1;
+    }
+
+    ~Stack() {
+        delete[] arr;
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == capacity - 1;
+    }
+
+    void push(char ch) {
+        if (isFull()) {
+            cout << "Stack Overflow! Cannot push more elements." << endl;
+        } else {
+            arr[++top] = ch;
+        }
+    }
+
+    char pop() {
+        if (isEmpty()) {
+            cout << "Stack Underflow! Cannot pop from an empty stack." << endl;
+            return '\0';
+        } else {
+            return arr[top--];
+        }
+    }
+
+    char peek() {
+        if (isEmpty()) {
+            cout << "Stack is empty." << endl;
+            return '\0';
+        } else {
+            return arr[top];
+        }
+    }
+};
+
+bool isOperator(char ch) {
+    return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+}
+
+int precedence(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
+}
+
+string infixToPostfix(const string& infix) {
+    Stack st(infix.length());
+    string postfix = "";
+
+    for (char ch : infix) {
+        if (isalnum(ch)) {
+            postfix += ch;
+        } else if (ch == '(') {
+            st.push(ch);
+        } else if (ch == ')') {
+            while (!st.isEmpty() && st.peek() != '(') {
+                postfix += st.pop();
+            }
+            st.pop(); // Pop '('
+        } else { // Operator
+            while (!st.isEmpty() && precedence(st.peek()) >= precedence(ch)) {
+                postfix += st.pop();
+            }
+            st.push(ch);
+        }
+    }
+
+    while (!st.isEmpty()) {
+        postfix += st.pop();
+    }
+
+    return postfix;
+}
+
+int main() {
+    string infix, postfix;
+
+    cout << "Enter the infix expression: ";
+    cin >> infix;
+
+    postfix = infixToPostfix(infix);
+    cout << "Postfix expression: " << postfix << endl;
+
+    return 0;
+}

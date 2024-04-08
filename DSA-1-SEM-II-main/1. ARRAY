@@ -1,0 +1,287 @@
+// Implement Array and write a menu driven program to
+// perform all the operation on array elements
+#include<iostream>
+using namespace std;
+const int MAX=10; // Change the array size as needed
+
+class Array
+{
+    private:
+        int arr[MAX];
+        int size;
+    public:
+        Array() {
+            size = 0;
+        }
+        void insertBeginning(int num);
+        void insertEnd(int num);
+        void insertAtPosition(int pos, int num);
+        void deleteBeginning();
+        void deleteEnd();
+        void deleteAtPosition(int pos);
+        void insertBefore(int element, int num);
+        void insertAfter(int element, int num);
+        void deleteBefore(int element);
+        void deleteAfter(int element);
+        void reverse();
+        void search(int num);
+        void display();
+};
+
+void Array::insertBeginning(int num)
+{
+    if(size < MAX) {
+        for(int i = size; i > 0; i--)
+            arr[i] = arr[i-1];
+        arr[0] = num;
+        size++;
+    } else {
+        cout << "Array is full. Cannot insert more elements." << endl;
+    }
+}
+
+void Array::insertEnd(int num)
+{
+    if(size < MAX) {
+        arr[size++] = num;
+    } else {
+        cout << "Array is full. Cannot insert more elements." << endl;
+    }
+}
+
+void Array::insertAtPosition(int pos, int num)
+{
+    if(pos >= 0 && pos <= size && size < MAX) {
+        for(int i = size; i > pos; i--)
+            arr[i] = arr[i-1];
+        arr[pos] = num;
+        size++;
+    } else {
+        cout << "Invalid position or array is full." << endl;
+    }
+}
+
+void Array::deleteBeginning()
+{
+    if(size > 0) {
+        for(int i = 0; i < size - 1; i++)
+            arr[i] = arr[i+1];
+        size--;
+    } else {
+        cout << "Array is empty. Cannot delete." << endl;
+    }
+}
+
+void Array::deleteEnd()
+{
+    if(size > 0) {
+        size--;
+    } else {
+        cout << "Array is empty. Cannot delete." << endl;
+    }
+}
+
+void Array::deleteAtPosition(int pos)
+{
+    if(pos >= 0 && pos < size) {
+        for(int i = pos; i < size - 1; i++)
+            arr[i] = arr[i+1];
+        size--;
+    } else {
+        cout << "Invalid position." << endl;
+    }
+}
+
+void Array::insertBefore(int element, int num)
+{
+    int pos = -1;
+    for(int i = 0; i < size; i++) {
+        if(arr[i] == element) {
+            pos = i;
+            break;
+        }
+    }
+    if(pos != -1) {
+        insertAtPosition(pos, num);
+    } else {
+        cout << "Element not found." << endl;
+    }
+}
+
+void Array::insertAfter(int element, int num)
+{
+    int pos = -1;
+    for(int i = 0; i < size; i++) {
+        if(arr[i] == element) {
+            pos = i + 1;
+            break;
+        }
+    }
+    if(pos != -1) {
+        insertAtPosition(pos, num);
+    } else {
+        cout << "Element not found." << endl;
+    }
+}
+
+void Array::deleteBefore(int element)
+{
+    int pos = -1;
+    for(int i = 0; i < size; i++) {
+        if(arr[i] == element) {
+            pos = i - 1;
+            break;
+        }
+    }
+    if(pos != -1) {
+        deleteAtPosition(pos);
+    } else {
+        cout << "Element not found or no element before it." << endl;
+    }
+}
+
+void Array::deleteAfter(int element)
+{
+    int pos = -1;
+    for(int i = 0; i < size; i++) {
+        if(arr[i] == element) {
+            pos = i + 1;
+            break;
+        }
+    }
+    if(pos != -1 && pos < size) {
+        deleteAtPosition(pos);
+    } else {
+        cout << "Element not found or no element after it." << endl;
+    }
+}
+
+void Array::reverse()
+{
+    for(int i = 0; i < size / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[size - i - 1];
+        arr[size - i - 1] = temp;
+    }
+}
+
+void Array::search(int num)
+{
+    for(int i = 0; i < size; i++) {
+        if(arr[i] == num) {
+            cout << "Element " << num << " found at position " << i + 1 << endl;
+            return;
+        }
+    }
+    cout << "Element " << num << " not found." << endl;
+}
+
+void Array::display()
+{
+    cout << "Array: ";
+    for(int i = 0; i < size; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main()
+{
+    Array a;
+    int choice, element, num, pos;
+    
+    do {
+        cout << "\n------ Menu ------" << endl;
+        cout << "1. Insert at beginning" << endl;
+        cout << "2. Insert at end" << endl;
+        cout << "3. Insert at position" << endl;
+        cout << "4. Delete at beginning" << endl;
+        cout << "5. Delete at end" << endl;
+        cout << "6. Delete at position" << endl;
+        cout << "7. Insert before an element" << endl;
+        cout << "8. Insert after an element" << endl;
+        cout << "9. Delete before an element" << endl;
+        cout << "10. Delete after an element" << endl;
+        cout << "11. Reverse the array" << endl;
+        cout << "12. Search for an element" << endl;
+        cout << "13. Display array" << endl;
+        cout << "14. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        
+        switch(choice) {
+            case 1:
+                cout << "Enter element to insert at beginning: ";
+                cin >> num;
+                a.insertBeginning(num);
+                break;
+            case 2:
+                cout << "Enter element to insert at end: ";
+                cin >> num;
+                a.insertEnd(num);
+                break;
+            case 3:
+                cout << "Enter position to insert at: ";
+                cin >> pos;
+                cout << "Enter element to insert: ";
+                cin >> num;
+                a.insertAtPosition(pos, num);
+                break;
+            case 4:
+                a.deleteBeginning();
+                break;
+            case 5:
+                a.deleteEnd();
+                break;
+            case 6:
+                cout << "Enter position to delete from: ";
+                cin >> pos;
+                a.deleteAtPosition(pos);
+                break;
+            case 7:
+                cout << "Enter element to insert before: ";
+                cin >> element;
+                cout << "Enter element to insert: ";
+                cin >> num;
+                a.insertBefore(element, num);
+                break;
+            case 8:
+                cout << "Enter element to insert after: ";
+                cin >> element;
+                cout << "Enter element to insert: ";
+                cin >> num;
+                a.insertAfter(element, num);
+                break;
+            case 9:
+                cout << "Enter element to delete before: ";
+                cin >> element;
+                a.deleteBefore(element);
+                break;
+            case 10:
+                cout << "Enter element to delete after: ";
+                cin >> element;
+                a.deleteAfter(element);
+                break;
+            case 11:
+                a.reverse();
+                cout << "Array reversed." << endl;
+                break;
+            case 12:
+                cout << "Enter element to search: ";
+                cin >> num;
+                a.search(num);
+                break;
+            case 13:
+                a.display();
+                break;
+            case 14:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+        
+    } while(choice != 14);
+
+    return 0;
+}

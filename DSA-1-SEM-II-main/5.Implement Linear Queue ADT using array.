@@ -1,0 +1,123 @@
+#include <iostream>
+using namespace std;
+
+const int MAX_SIZE = 5; // Maximum size of the queue
+
+class Queue {
+private:
+    int* arr;
+    int front;
+    int rear;
+    int capacity;
+
+public:
+    Queue(int size) {
+        capacity = size;
+        arr = new int[capacity];
+        front = rear = -1;
+    }
+
+    ~Queue() {
+        delete[] arr;
+    }
+
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    bool isFull() {
+        return (rear + 1) % capacity == front;
+    }
+
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue Overflow! Cannot enqueue more elements." << endl;
+            return;
+        }
+        if (isEmpty())
+            front = 0;
+        rear = (rear + 1) % capacity;
+        arr[rear] = value;
+        cout << "Enqueued element: " << value << endl;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "Queue Underflow! Cannot dequeue from an empty queue." << endl;
+            return -1; // or throw an exception
+        }
+        int value = arr[front];
+        if (front == rear) // If there is only one element in the queue
+            front = rear = -1;
+        else
+            front = (front + 1) % capacity;
+        cout << "Dequeued element: " << value << endl;
+        return value;
+    }
+
+    int peek() {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return -1; // or throw an exception
+        }
+        return arr[front];
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+        cout << "Queue elements: ";
+        int i = front;
+        do {
+            cout << arr[i] << " ";
+            i = (i + 1) % capacity;
+        } while (i != (rear + 1) % capacity);
+        cout << endl;
+    }
+};
+
+int main() {
+    Queue queue(MAX_SIZE);
+    int choice, element;
+
+    // Menu-driven interface
+    do {
+        cout << "\n------ Menu ------" << endl;
+        cout << "1. Enqueue" << endl;
+        cout << "2. Dequeue" << endl;
+        cout << "3. Peek" << endl;
+        cout << "4. Display" << endl;
+        cout << "5. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter element to enqueue: ";
+                cin >> element;
+                queue.enqueue(element);
+                break;
+            case 2:
+                queue.dequeue();
+                break;
+            case 3:
+                element = queue.peek();
+                if (element != -1)
+                    cout << "Front element: " << element << endl;
+                break;
+            case 4:
+                queue.display();
+                break;
+            case 5:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}

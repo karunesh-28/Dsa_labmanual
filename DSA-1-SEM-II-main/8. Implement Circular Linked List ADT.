@@ -1,0 +1,233 @@
+#include <iostream>
+using namespace std;
+
+class CircularLinkedList {
+private:
+    struct Node {
+        int data;
+        Node* next;
+    }* head;
+
+public:
+    CircularLinkedList() {
+        head = nullptr;
+    }
+
+    // Function to insert a new node at the end of the circular linked list
+    void insert(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = nullptr;
+
+        if (head == nullptr) {
+            head = newNode;
+            head->next = head; // Pointing back to itself for circularity
+        }
+        else {
+            Node* temp = head;
+            while (temp->next != head) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+            newNode->next = head; // Pointing back to head for circularity
+        }
+    }
+
+    // Function to display the elements of the circular linked list
+    void display() {
+        if (head == nullptr) {
+            cout << "Circular Linked List is empty" << endl;
+            return;
+        }
+
+        Node* temp = head;
+        do {
+            cout << temp->data << " ";
+            temp = temp->next;
+        } while (temp != head);
+        cout << endl;
+    }
+
+    // Function to delete a node with the given value from the circular linked list
+    void deleteNode(int value) {
+        if (head == nullptr) {
+            cout << "Circular Linked List is empty. Cannot delete." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        Node* prev = nullptr;
+
+        // Traverse the circular linked list to find the node with the given value
+        do {
+            if (temp->data == value)
+                break;
+
+            prev = temp;
+            temp = temp->next;
+        } while (temp != head);
+
+        // If node with given value is not found
+        if (temp == head && temp->data != value) {
+            cout << "Element " << value << " not found in the Circular Linked List." << endl;
+            return;
+        }
+
+        // If the node to be deleted is the head node
+        if (temp == head) {
+            // If head is the only node in the circular linked list
+            if (head->next == head) {
+                delete head;
+                head = nullptr;
+            }
+            else {
+                prev = head;
+                while (prev->next != head)
+                    prev = prev->next;
+                prev->next = head->next;
+                delete head;
+                head = prev->next;
+            }
+        }
+        else {
+            prev->next = temp->next;
+            delete temp;
+        }
+
+        cout << "Element " << value << " deleted from the Circular Linked List." << endl;
+    }
+
+    // Function to search for a value in the circular linked list
+    void search(int value) {
+        if (head == nullptr) {
+            cout << "Circular Linked List is empty. Cannot search." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        int position = 1;
+        bool found = false;
+
+        // Traverse the circular linked list to search for the value
+        do {
+            if (temp->data == value) {
+                cout << "Element " << value << " found at position " << position << "." << endl;
+                found = true;
+                break;
+            }
+            temp = temp->next;
+            position++;
+        } while (temp != head);
+
+        if (!found)
+            cout << "Element " << value << " not found in the Circular Linked List." << endl;
+    }
+
+    // Function to get the count of nodes in the circular linked list
+    int getCount() {
+        if (head == nullptr)
+            return 0;
+
+        Node* temp = head;
+        int count = 0;
+
+        // Traverse the circular linked list and count nodes
+        do {
+            count++;
+            temp = temp->next;
+        } while (temp != head);
+
+        return count;
+    }
+
+    // Function to delete the entire circular linked list
+    void deleteList() {
+        if (head == nullptr) {
+            cout << "Circular Linked List is already empty." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        Node* nextNode;
+
+        // Traverse the circular linked list and delete nodes
+        do {
+            nextNode = temp->next;
+            delete temp;
+            temp = nextNode;
+        } while (temp != head);
+
+        head = nullptr;
+        cout << "Circular Linked List deleted successfully." << endl;
+    }
+
+    ~CircularLinkedList() {
+        deleteList();
+    }
+};
+
+int main() {
+    CircularLinkedList circularList;
+    int choice, value;
+
+    do {
+        cout << "\n------ Menu ------" << endl;
+        cout << "1. Insert" << endl;
+        cout << "2. Delete" << endl;
+        cout << "3. Search" << endl;
+        cout << "4. Display" << endl;
+        cout << "5. Get Count" << endl;
+        cout << "6. Delete List" << endl;
+        cout << "7. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> value;
+                circularList.insert(value);
+                break;
+            case 2:
+                if (circularList.getCount() == 0) {
+                    cout << "Circular Linked List is empty. Cannot delete." << endl;
+                    break;
+                }
+                cout << "Enter value to delete: ";
+                cin >> value;
+                circularList.deleteNode(value);
+                break;
+            case 3:
+                if (circularList.getCount() == 0) {
+                    cout << "Circular Linked List is empty. Cannot search." << endl;
+                    break;
+                }
+                cout << "Enter value to search: ";
+                cin >> value;
+                circularList.search(value);
+                break;
+            case 4:
+                if (circularList.getCount() == 0) {
+                    cout << "Circular Linked List is empty." << endl;
+                    break;
+                }
+                cout << "Circular Linked List: ";
+                circularList.display();
+                break;
+            case 5:
+                cout << "Number of nodes in Circular Linked List: " << circularList.getCount() << endl;
+                break;
+            case 6:
+                circularList.deleteList();
+                break;
+            case 7:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please enter a valid option." << endl;
+                break;
+        }
+    } while (choice != 7);
+
+    return 0;
+}
